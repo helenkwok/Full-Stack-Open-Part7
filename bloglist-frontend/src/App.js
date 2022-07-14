@@ -1,17 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { setNotification } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
-  const [messageStyle, setMessageStyle] = useState(null)
   const [user, setUser] = useState(null)
+
+  const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
@@ -40,12 +42,7 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (exception) {
-      setMessageStyle('error')
-      setMessage('wrong username or password')
-      setTimeout(() => {
-        setMessage(null)
-        setMessageStyle(null)
-      }, 5000)
+      dispatch(setNotification('wrong username or password', 'error', 5))
     }
   }
 
@@ -61,23 +58,10 @@ const App = () => {
       console.log(returnedBlog)
       setBlogs(blogs.concat(returnedBlog))
 
-      setMessage(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-      )
-      setMessageStyle('notification')
+      dispatch(setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'notification', 5))
 
-      setTimeout(() => {
-        setMessage(null)
-        setMessageStyle(null)
-      }, 5000)
     } catch (exception) {
-      setMessage('Failed to create new blog')
-      setMessageStyle('error')
-
-      setTimeout(() => {
-        setMessage(null)
-        setMessageStyle(null)
-      }, 5000)
+      dispatch(setNotification('Failed to create new blog', 'error', 5))
     }
   }
 
@@ -93,13 +77,7 @@ const App = () => {
 
       setBlogs(blogsUpdated.slice().sort((a, b) => b.likes - a.likes))
     } catch (exception) {
-      setMessage('Failed to update blog')
-      setMessageStyle('error')
-
-      setTimeout(() => {
-        setMessage(null)
-        setMessageStyle(null)
-      }, 5000)
+      dispatch(setNotification('Failed to update blog', 'error', 5))
     }
   }
 
@@ -112,13 +90,7 @@ const App = () => {
 
         setBlogs(blogs.filter((blog) => blog.id !== removeBlog.id))
       } catch (exception) {
-        setMessage('Failed to remove blog')
-        setMessageStyle('error')
-
-        setTimeout(() => {
-          setMessage(null)
-          setMessageStyle(null)
-        }, 5000)
+        dispatch(setNotification('Failed to remove blog', 'error', 5))
       }
     }
   }
@@ -127,8 +99,6 @@ const App = () => {
     return (
       <LoginForm
         handleLogin={handleLogin}
-        message={message}
-        messageStyle={messageStyle}
       />
     )
   }
@@ -137,7 +107,7 @@ const App = () => {
     <div>
       <div>
         <h2>blogs</h2>
-        <Notification message={message} messageStyle={messageStyle} />
+        <Notification />
         <p>
           {user.name} logged in
           <button onClick={handleLogout}>logout</button>
