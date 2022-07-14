@@ -25,10 +25,10 @@ describe('Blog app', function() {
       }
       cy.request('POST', 'http://localhost:3003/api/users/', user1)
       cy.request('POST', 'http://localhost:3003/api/users/', user2)
-      cy.visit('http://localhost:3000')
     })
 
     it('succeeds with correct credentials', function() {
+      cy.visit('http://localhost:3000')
       cy.get('input:first').type('mluukkai')
       cy.get('input:last').type('salainen')
       cy.contains('login').click()
@@ -37,6 +37,7 @@ describe('Blog app', function() {
     })
 
     it('fails with wrong credentials', function() {
+      cy.visit('http://localhost:3000')
       cy.get('input:first').type('mluukkai')
       cy.get('input:last').type('sekret')
       cy.contains('login').click()
@@ -53,11 +54,11 @@ describe('Blog app', function() {
           username: 'mluukkai', password: 'salainen'
         }).then(response => {
           localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
-          cy.visit('http://localhost:3000')
         })
       })
 
       it('A blog can be created', function() {
+        cy.visit('http://localhost:3000')
         cy.contains('new note').click()
 
         const newBlog = {
@@ -85,10 +86,10 @@ describe('Blog app', function() {
             author: 'Blogger',
             url: 'http://www.test.com/blog'
           })
-          cy.visit('http://localhost:3000')
         })
 
         it('User can like a blog', function() {
+          cy.visit('http://localhost:3000')
           cy.get('.blog').within(() => {
           cy.contains('view').click()
           cy.get('.likeButton').click()
@@ -97,6 +98,7 @@ describe('Blog app', function() {
         })
 
         it('User can delete a blog', function() {
+          cy.visit('http://localhost:3000')
           cy.get('.blog').within(() => {
           cy.contains('view').click()
           cy.contains('remove').click()
@@ -140,10 +142,10 @@ describe('Blog app', function() {
             author: 'Blogger3',
             url: 'http://www.test.com/blog3'
           })
-          cy.visit('http://localhost:3000')
         })
 
         it('one of those can be made important', function () {
+          cy.visit('http://localhost:3000')
           cy.get('.blog').eq(0).within(() => {
             cy.contains('view').click()
             cy.get('.likeButton').click()

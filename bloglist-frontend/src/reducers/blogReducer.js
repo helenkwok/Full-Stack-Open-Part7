@@ -40,9 +40,15 @@ export const initializeBlogs = () => {
 
 export const addBlog = content => {
   return async dispatch => {
-    const newBlog = await blogService.create(content)
+    try {
+      const newBlog = await blogService.create(content)
 
-    dispatch(appendBlog(newBlog))
+      dispatch(appendBlog(newBlog))
+
+      return 'ok'
+    } catch (error) {
+      return error.message
+    }
   }
 }
 
@@ -52,17 +58,27 @@ export const addLike = blog => {
       ...blog, likes: blog.likes + 1
     }
 
-    const updatedBlog = await blogService.update(changedBlog)
+    try {
+      const updatedBlog = await blogService.update(changedBlog)
 
-    dispatch(updateBlog(updatedBlog))
+      dispatch(updateBlog(updatedBlog))
+
+      return 'ok'
+    } catch (error) {
+      return error.message
+    }
   }
 }
 
 export const removeBlog = id => {
   return async dispatch => {
-    await blogService.remove(id)
-
-    dispatch(deleteBlog(id))
+    try {
+      await blogService.remove(id)
+      dispatch(deleteBlog(id))
+      return 'ok'
+    } catch (error) {
+      return error.message
+    }
   }
 }
 
