@@ -87,6 +87,8 @@ blogsRouter.put('/:id', async (request, response) => {
       context: 'query',
     })
 
+    await updatedBlog.populate('user', { username: 1, name: 1 })
+
     response.json(updatedBlog)
   } else {
     response.status(404).end()

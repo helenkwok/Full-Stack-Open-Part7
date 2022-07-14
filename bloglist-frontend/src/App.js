@@ -6,7 +6,7 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, addBlog } from './reducers/blogReducer'
+import { initializeBlogs, addBlog, addLike, removeBlog } from './reducers/blogReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -57,40 +57,29 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       dispatch(addBlog(blogObject))
-      //const returnedBlog = await blogService.create(blogObject)
-      //setBlogs(blogs.concat(returnedBlog))
 
       dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'notification', 5))
-
     } catch (exception) {
       dispatch(setNotification('Failed to create new blog', 'error', 5))
     }
   }
 
-  const addLike = async (likedBlogObject) => {
+  const like = async (likedBlogObject) => {
     try {
-      const returnedBlog = await blogService.update(likedBlogObject)
-
-      let blogsUpdated = [...blogs]
-
-      blogsUpdated[
-        blogsUpdated.findIndex((blog) => blog.id === returnedBlog.id)
-      ].likes = returnedBlog.likes
-
-      //setBlogs(blogsUpdated.slice().sort((a, b) => b.likes - a.likes))
+      dispatch(addLike(likedBlogObject))
     } catch (exception) {
       dispatch(setNotification('Failed to update blog', 'error', 5))
     }
   }
 
-  const removeBlog = async (removeBlog) => {
+  const remove = async (blog) => {
     if (
-      window.confirm(`Remove blog ${removeBlog.title} by ${removeBlog.author}`)
+      window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     ) {
       try {
-        await blogService.remove(removeBlog.id)
+        dispatch(removeBlog(blog.id))
+        //await blogService.remove(removeBlog.id)
 
-        //setBlogs(blogs.filter((blog) => blog.id !== removeBlog.id))
       } catch (exception) {
         dispatch(setNotification('Failed to remove blog', 'error', 5))
       }
@@ -122,8 +111,8 @@ const App = () => {
             key={blog.id}
             blog={blog}
             user={user}
-            addLike={addLike}
-            removeBlog={removeBlog}
+            like={like}
+            remove={remove}
           />
         ))}
       </div>
