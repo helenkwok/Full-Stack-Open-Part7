@@ -1,28 +1,30 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, addBlog } from './reducers/blogReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
+  const blogs = useSelector(state =>
+    state.blogs.slice().sort(
+      (a, b) => b.likes - a.likes
+    )
+  )
+
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) =>
-        setBlogs(blogs.slice().sort((a, b) => b.likes - a.likes))
-      )
+    dispatch(initializeBlogs())
   }, [])
 
   useEffect(() => {
@@ -54,11 +56,11 @@ const App = () => {
   const createBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const returnedBlog = await blogService.create(blogObject)
-      console.log(returnedBlog)
-      setBlogs(blogs.concat(returnedBlog))
+      dispatch(addBlog(blogObject))
+      //const returnedBlog = await blogService.create(blogObject)
+      //setBlogs(blogs.concat(returnedBlog))
 
-      dispatch(setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'notification', 5))
+      dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'notification', 5))
 
     } catch (exception) {
       dispatch(setNotification('Failed to create new blog', 'error', 5))
@@ -75,7 +77,7 @@ const App = () => {
         blogsUpdated.findIndex((blog) => blog.id === returnedBlog.id)
       ].likes = returnedBlog.likes
 
-      setBlogs(blogsUpdated.slice().sort((a, b) => b.likes - a.likes))
+      //setBlogs(blogsUpdated.slice().sort((a, b) => b.likes - a.likes))
     } catch (exception) {
       dispatch(setNotification('Failed to update blog', 'error', 5))
     }
@@ -88,7 +90,7 @@ const App = () => {
       try {
         await blogService.remove(removeBlog.id)
 
-        setBlogs(blogs.filter((blog) => blog.id !== removeBlog.id))
+        //setBlogs(blogs.filter((blog) => blog.id !== removeBlog.id))
       } catch (exception) {
         dispatch(setNotification('Failed to remove blog', 'error', 5))
       }
