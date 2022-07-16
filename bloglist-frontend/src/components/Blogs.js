@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Togglable from './Togglable'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
-import { initializeBlogs, addBlog, addLike, removeBlog } from '../reducers/blogReducer'
+import { addBlog, addLike, removeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blogs = () => {
@@ -14,10 +14,6 @@ const Blogs = () => {
   const user = useSelector(state =>
     state.login
   )
-
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [])
 
   const blogs = useSelector(state =>
     state.blogs.slice().sort(

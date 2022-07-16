@@ -6,17 +6,20 @@ import Notification from './components/Notification'
 import Blogs from './components/Blogs'
 import { setNotification } from './reducers/notificationReducer'
 import { loggedUser, login, logout } from './reducers/loginReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/userReducer'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
-  const dispatch = useDispatch()
+  const currentUser = useSelector(state => state.login)
 
-  const user = useSelector(state =>
-    state.login
-  )
+  const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(loggedUser())
+    dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
   const handleLogin = async (userObject) => {
@@ -35,7 +38,7 @@ const App = () => {
     dispatch(logout())
   }
 
-  if (user === null) {
+  if (currentUser === null) {
     return (
       <LoginForm
         handleLogin={handleLogin}
@@ -48,12 +51,15 @@ const App = () => {
       <h2>blogs</h2>
       <Notification />
       <p>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
+        {currentUser.name} logged in
       </p>
+      <button onClick={handleLogout}>logout</button>
 
       <Routes>
-        <Route path="/users" element={<Users />} />
+        <Route path="users">
+          <Route path=":userId" element={<User />} />
+          <Route path='' element={<Users />} />
+        </Route>
         <Route path="/" element={<Blogs />} />
       </Routes>
     </div>

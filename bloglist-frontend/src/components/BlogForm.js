@@ -10,8 +10,8 @@ const BlogForm = ({ createBlog }) => {
 
     createBlog({
       title: title.input.value,
-      author: author,
-      url: url,
+      author: author.input.value,
+      url: url.input.value,
     })
 
     title.reset()
