@@ -1,19 +1,15 @@
 import { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Togglable from './Togglable'
-import Blog from './Blog'
 import BlogForm from './BlogForm'
-import { addBlog, addLike, removeBlog } from '../reducers/blogReducer'
+import { addBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Link } from 'react-router-dom'
 
 const Blogs = () => {
   const dispatch = useDispatch()
 
   const blogFormRef = useRef()
-
-  const user = useSelector(state =>
-    state.login
-  )
 
   const blogs = useSelector(state =>
     state.blogs.slice().sort(
@@ -35,47 +31,15 @@ const Blogs = () => {
     })
   }
 
-  const like = async (likedBlogObject) => {
-    dispatch(addLike(likedBlogObject)).then(
-      response => {
-        if (response !== 'ok') {
-          throw response
-        }
-      }
-    ).catch (() => {
-      dispatch(setNotification('Failed to update blog', 'error', 5))
-    })
-  }
-
-  const remove = async (blog) => {
-    if (
-      window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-    ) {
-      dispatch(removeBlog(blog.id)).then(
-        response => {
-          if (response !== 'ok') {
-            throw response
-          }
-        }
-      ).catch (() => {
-        dispatch(setNotification('Failed to remove blog', 'error', 5))
-      })
-    }
-  }
-
   return (
     <div>
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          like={like}
-          remove={remove}
-        />
+        <div key={blog.id} className="blog">
+          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+        </div>
       ))}
     </div>
   )

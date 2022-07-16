@@ -4,12 +4,13 @@ import { Routes, Route } from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
+import Users from './components/Users'
+import User from './components/User'
 import { setNotification } from './reducers/notificationReducer'
 import { loggedUser, login, logout } from './reducers/loginReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
-import Users from './components/Users'
-import User from './components/User'
 
 const App = () => {
   const currentUser = useSelector(state => state.login)
@@ -60,7 +61,10 @@ const App = () => {
           <Route path=":userId" element={<User />} />
           <Route path='' element={<Users />} />
         </Route>
-        <Route path="/" element={<Blogs />} />
+        <Route path="/">
+          <Route path="blogs/:blogId" element={<Blog />} />
+          <Route path='' element={<Blogs />} />
+        </Route>
       </Routes>
     </div>
   )

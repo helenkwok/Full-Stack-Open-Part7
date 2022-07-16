@@ -1,41 +1,78 @@
-import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useMatch } from 'react-router-dom'
+import { setNotification } from '../reducers/notificationReducer'
+import { addLike, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, user, like, remove }) => {
-  const [visible, setVisible] = useState(false)
 
-  const showWhenVisible = { display: visible ? '' : 'none' }
+const Blog = () => {
+  const dispatch = useDispatch()
 
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  const loggedUser = useSelector(state =>
+    state.login
+  )
+  const blogs = useSelector(state => state.blogs )
+
+  const match = useMatch('/blogs/:id')
+
+  const blog = match
+    ? blogs.find(b => b.id === match.params.id)
+    : null
+
+  if (!blog) return null
+
+  const like = async (blog) => {
+    dispatch(addLike(blog)).then(
+      response => {
+        if (response !== 'ok') {
+          throw response
+        }
+      }
+    ).catch (() => {
+      dispatch(setNotification('Failed to update blog', 'error', 5))
+    })
+  }
+
+  const remove = async (blog) => {
+    if (
+      window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    ) {
+      dispatch(removeBlog(blog.id)).then(
+        response => {
+          if (response !== 'ok') {
+            throw response
+          }
+        }
+      ).catch (() => {
+        dispatch(setNotification('Failed to remove blog', 'error', 5))
+      })
+    }
   }
 
   return (
-    <div className="blog">
-      <div>
+    <div>
+      <h2>
         <span className="title">{blog.title}</span>
         <span> </span>
         <span className="author">{blog.author}</span>
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      </div>
-      <div style={showWhenVisible}>
-        <div className="url">{blog.url}</div>
-        <div className="likes">
-          <span>likes {blog.likes}</span>
-          <button className="likeButton" onClick={() => like(blog)}>
-            like
-          </button>
-        </div>
-        {blog.user.name}
-        <br />
-        <button
-          style={{
-            display: (user.name === blog.user.name) & visible ? '' : 'none',
-          }}
-          onClick={() => remove(blog)}
-        >
-          remove
+      </h2>
+      <a href={blog.url} alt={blog.url} className='url' target='_blank' rel='noreferrer'>
+        {blog.url}
+      </a>
+      <div className="likes">
+        <span>{blog.likes} likes</span>
+        <button className="likeButton" onClick={() => like(blog)}>
+          like
         </button>
       </div>
+      <div>added by {blog.user.name}</div>
+      <button
+        style={{
+          display: loggedUser.name === blog.user.name ? '' : 'none',
+        }}
+        onClick={() => remove(blog)}
+      >
+        remove
+      </button>
     </div>
   )
 }

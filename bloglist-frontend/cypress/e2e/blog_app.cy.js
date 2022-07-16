@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -91,19 +92,19 @@ describe('Blog app', function() {
         it('User can like a blog', function() {
           cy.visit('http://localhost:3000')
           cy.get('.blog').within(() => {
-          cy.contains('view').click()
-          cy.get('.likeButton').click()
-          cy.get('.likes').should('contain', 'likes 1')
+            cy.contains('End to end testing is done with Cypress').click()
           })
+          cy.get('.likeButton').click()
+          cy.get('.likes').should('contain', '1 likes')
         })
 
         it('User can delete a blog', function() {
           cy.visit('http://localhost:3000')
           cy.get('.blog').within(() => {
-          cy.contains('view').click()
-          cy.contains('remove').click()
-          cy.contains('Component testing is done with react-testing-library').should('not.exist')
+            cy.contains('End to end testing is done with Cypress').click()
           })
+          cy.contains('remove').click()
+          cy.contains('End to end testing is done with Cypress').should('not.exist')
         })
 
         it('Other user cannot delete the blog', function() {
@@ -114,11 +115,11 @@ describe('Blog app', function() {
             localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
             cy.visit('http://localhost:3000')
             cy.get('.blog').within(() => {
-              cy.contains('view').click()
-              cy.contains('remove')
-                .should('have.css', 'display', 'none')
-                .click({force: true})
+              cy.contains('End to end testing is done with Cypress').click()
             })
+            cy.contains('remove')
+              .should('have.css', 'display', 'none')
+              .click({ force: true })
             cy.get('.error').should('contain', 'Failed to remove blog')
             cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
             cy.get('.error').should('have.css', 'border-style', 'solid')
@@ -146,18 +147,24 @@ describe('Blog app', function() {
 
         it('one of those can be made important', function () {
           cy.visit('http://localhost:3000')
+
           cy.get('.blog').eq(0).within(() => {
-            cy.contains('view').click()
-            cy.get('.likeButton').click()
-            cy.get('.likes').should('contain', 'likes 1')
+            cy.get('a').click()
           })
+          cy.get('.likeButton').click()
+
+          cy.visit('http://localhost:3000')
+
           cy.get('.blog').eq(2).within(() => {
-            cy.contains('view').click()
-            cy.get('.likeButton').click()
-            cy.get('.likes').should('contain', 'likes 1')
-            cy.get('.likeButton').click()
-            cy.get('.likes').should('contain', 'likes 2')
+            cy.get('a').click()
           })
+          cy.get('.likeButton').click()
+          cy.get('.likes').should('contain', '1 likes')
+          cy.get('.likeButton').click()
+          cy.get('.likes').should('contain', '2 likes')
+
+          cy.visit('http://localhost:3000')
+
           cy.get('.blog').eq(0).should('contain', 'The title with the most likes')
           cy.get('.blog').eq(1).should('contain', 'The title with the second most likes')
         })
