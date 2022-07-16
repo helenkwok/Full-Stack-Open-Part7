@@ -24,3 +24,11 @@
   border: 1px solid;
   margin-bottom: 5px;
 }
+
+.nav {
+  padding: 5px;
+}
+
+.navBar {
+  background: lightgrey;
+}

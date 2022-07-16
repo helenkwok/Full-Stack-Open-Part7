@@ -34,7 +34,7 @@ describe('Blog app', function() {
       cy.get('input:last').type('salainen')
       cy.contains('login').click()
 
-      cy.contains('blogs')
+      cy.contains('blog app')
     })
 
     it('fails with wrong credentials', function() {

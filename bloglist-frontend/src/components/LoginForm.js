@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import Notification from './Notification'
 import useField from '../hooks/useField'
 
 const LoginForm = ({ handleLogin }) => {
+  const navigate = useNavigate()
   const username = useField('text', 'username')
   const password = useField('password', 'password')
 
@@ -16,6 +18,7 @@ const LoginForm = ({ handleLogin }) => {
 
     username.reset()
     password.reset()
+    navigate('/')
   }
 
   return (
