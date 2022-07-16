@@ -1,47 +1,37 @@
-import { useState } from 'react'
 import PropTypes from 'prop-types'
 import Notification from './Notification'
+import useField from '../hooks/useField'
 
 const LoginForm = ({ handleLogin }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value)
-  }
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value)
-  }
+  const username = useField('text', 'username')
+  const password = useField('password', 'password')
 
   const loginInput = (event) => {
     event.preventDefault()
 
     handleLogin({
-      username: username,
-      password: password,
+      username: username.input.value,
+      password: password.input.value,
     })
 
-    setUsername('')
-    setPassword('')
+    username.reset()
+    password.reset()
   }
 
   return (
     <div>
       <h2>log in to application</h2>
+
       <Notification />
 
       <form onSubmit={loginInput}>
         <div>
           username
-          <input value={username} onChange={handleUsernameChange} />
+          <input {...username.input} />
         </div>
         <div>
           password
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
+          <input {...password.input} />
         </div>
         <button type="submit">login</button>
       </form>
