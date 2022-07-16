@@ -1,8 +1,9 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 }).populate('comments', { comment: 1 })
 
   response.json(blogs)
 })
@@ -11,7 +12,7 @@ blogsRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id).populate('user', {
     username: 1,
     name: 1,
-  })
+  }).populate('comments', { comment: 1 })
 
   blog ? response.json(blog) : response.status(404).end()
 })
@@ -38,6 +39,27 @@ blogsRouter.post('/', async (request, response) => {
   await savedBlog.populate('user', { username: 1, name: 1 })
 
   response.status(201).json(savedBlog)
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  if (!request.user) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  const body = request.body
+
+  const comment = new Comment({
+    comment: body.comment,
+    blog: blog._id,
+  })
+
+  const savedComment = await comment.save()
+  blog.comments = blog.comments.concat(savedComment._id)
+  const savedBlog = await blog.save()
+  await savedBlog.populate('comments', { comment: 1 })
+
+  response.status(201).json(savedComment)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {

@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useMatch } from 'react-router-dom'
 import { setNotification } from '../reducers/notificationReducer'
 import { addLike, removeBlog } from '../reducers/blogReducer'
+import Comments from './Comments'
 
 
 const Blog = () => {
@@ -73,6 +74,7 @@ const Blog = () => {
       >
         remove
       </button>
+      <Comments comments={blog.comments} />
     </div>
   )
 }

@@ -85,7 +85,7 @@ describe('Blog app', function() {
           cy.createBlog({
             title: 'End to end testing is done with Cypress',
             author: 'Blogger',
-            url: 'http://www.test.com/blog'
+            url: 'http://www.test.com/blog',
           })
         })
 
