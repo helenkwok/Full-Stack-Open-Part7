@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Container } from '@mui/material'
 import { loggedUser, logout } from '../reducers/loginReducer'
 import { initializeBlogs } from '../reducers/blogReducer'
 import { initializeUsers } from '../reducers/userReducer'
@@ -27,7 +28,9 @@ const Navigation = () => {
         <span className='nav'>{currentUser.name} logged in</span>
         <button onClick={handleLogout}>logout</button>
       </div>
-      <h2>blog app</h2>
+      <Container>
+        <h2>blog app</h2>
+      </Container>
     </div>
   )
 }

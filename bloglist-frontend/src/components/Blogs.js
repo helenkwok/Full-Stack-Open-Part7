@@ -1,10 +1,11 @@
 import { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { Container } from '@mui/material'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 import { addBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { Link } from 'react-router-dom'
 
 const Blogs = () => {
   const dispatch = useDispatch()
@@ -32,7 +33,7 @@ const Blogs = () => {
   }
 
   return (
-    <div>
+    <Container>
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm createBlog={createBlog} />
       </Togglable>
@@ -41,7 +42,7 @@ const Blogs = () => {
           <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
         </div>
       ))}
-    </div>
+    </Container>
   )
 }
 
