@@ -1,7 +1,14 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Container } from '@mui/material'
+import {
+  Container,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+  Typography
+} from '@mui/material'
 import { loggedUser, logout } from '../reducers/loginReducer'
 import { initializeBlogs } from '../reducers/blogReducer'
 import { initializeUsers } from '../reducers/userReducer'
@@ -21,17 +28,42 @@ const Navigation = () => {
     dispatch(logout())
   }
   return (
-    <div>
-      <div className='navBar'>
-        <Link className='nav' to="/">blogs</Link>
-        <Link className='nav' to="/users">users</Link>
-        <span className='nav'>{currentUser.name} logged in</span>
-        <button onClick={handleLogout}>logout</button>
-      </div>
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+          </IconButton>
+          <Button color="inherit" component={Link} to="/">
+            blogs
+          </Button>
+          <Button color="inherit" component={Link} to="/users">
+            users
+          </Button>
+          <Typography
+            sx={{
+              ml: 2,
+              fontWeight: 500,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            {currentUser.name} logged in
+          </Typography>
+          <Button color="inherit" onClick={handleLogout}>
+            logout
+          </Button>
+        </Toolbar>
+      </AppBar>
       <Container>
-        <h2>blog app</h2>
+        <Typography variant='h5'>blog app</Typography>
       </Container>
-    </div>
+    </>
   )
 }
 

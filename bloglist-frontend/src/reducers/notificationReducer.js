@@ -13,7 +13,7 @@ const notificationSlice = createSlice({
       return state
     },
     removeNotification(state) {
-      state = ''
+      state = initialState
       return state
     }
   },

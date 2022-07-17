@@ -1,9 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useMatch } from 'react-router-dom'
+import { Container, Button, Typography, List, ListItem, ListItemText, ListItemIcon } from '@mui/material'
+import CommentIcon from '@mui/icons-material/Comment'
 import { setNotification } from '../reducers/notificationReducer'
 import { addLike, removeBlog, addComment } from '../reducers/blogReducer'
 import CommentForm from './CommentForm'
-
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -63,44 +64,55 @@ const Blog = () => {
   }
 
   return (
-    <div>
-      <h2>
+    <Container>
+      <Typography variant='h6'>
         <span className="title">{blog.title}</span>
         <span> </span>
         <span className="author">{blog.author}</span>
-      </h2>
+      </Typography>
       <a href={blog.url} alt={blog.url} className='url' target='_blank' rel='noreferrer'>
         {blog.url}
       </a>
       <div className="likes">
-        <span>{blog.likes} likes</span>
-        <button className="likeButton" onClick={() => like()}>
-          like
-        </button>
+        <Typography>
+          {blog.likes} likes
+          <Button variant='contained' className="likeButton" onClick={() => like()}>
+            like
+          </Button>
+        </Typography>
       </div>
-      <div>added by {blog.user.name}</div>
-      <button
+      <Typography>added by {blog.user.name}</Typography>
+      <Button
+        variant='contained'
+        color="error"
         style={{
           display: loggedUser.name === blog.user.name ? '' : 'none',
         }}
         onClick={() => remove()}
       >
         remove
-      </button>
+      </Button>
       <div>
-        <h3>comments</h3>
+        <Typography variant='h6'>comments</Typography>
         <CommentForm createComment={createComment} />
-        <ul>
+        <List>
           {blog.comments.length > 0?
             blog.comments.map(comment =>
-              <li key={comment}>{comment}</li>
+              <ListItem key={comment}>
+                <ListItemIcon>
+                  <CommentIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  {comment}
+                </ListItemText>
+              </ListItem>
             )
             :
-            <div>no comment</div>
+            <Typography>no comment</Typography>
           }
-        </ul>
+        </List>
       </div>
-    </div>
+    </Container>
   )
 }
 

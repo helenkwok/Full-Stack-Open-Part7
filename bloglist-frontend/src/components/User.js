@@ -1,5 +1,7 @@
 import { useMatch } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Container, Typography, List, ListItem, ListItemText, ListItemIcon } from '@mui/material'
+import ArticleIcon from '@mui/icons-material/Article'
 
 const User = () => {
   const users = useSelector(state => state.users )
@@ -12,17 +14,18 @@ const User = () => {
   if (!user) return null
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
+    <Container>
+      <Typography variant='h6'>{user.name}</Typography>
+      <Typography variant='body'>added blogs</Typography>
+      <List>
         {user.blogs.map(blog =>
-          <li key={blog.id}>
-            {blog.title}
-          </li>
+          <ListItem key={blog.id}>
+            <ListItemIcon><ArticleIcon /></ListItemIcon>
+            <ListItemText>{blog.title}</ListItemText>
+          </ListItem>
         )}
-      </ul>
-    </div>
+      </List>
+    </Container>
   )
 }
 

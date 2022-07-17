@@ -1,7 +1,15 @@
 import { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Container } from '@mui/material'
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper
+} from '@mui/material'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 import { addBlog } from '../reducers/blogReducer'
@@ -24,7 +32,7 @@ const Blogs = () => {
     dispatch(addBlog(blogObject)).then(
       response => {
         if (response === 'ok') {
-          dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'notification', 5))
+          dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'success', 5))
         } else throw response
       }
     ).catch (() => {
@@ -37,11 +45,22 @@ const Blogs = () => {
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm createBlog={createBlog} />
       </Togglable>
-      {blogs.map((blog) => (
-        <div key={blog.id} className="blog">
-          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-        </div>
-      ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {blogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </TableCell>
+                <TableCell>
+                  {blog.author}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Container>
   )
 }

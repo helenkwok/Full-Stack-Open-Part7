@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import CssBaseline from '@mui/material/CssBaseline'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Navigation from './components/Navigation'
@@ -34,6 +35,7 @@ const App = () => {
 
   return (
     <div>
+      <CssBaseline />
       {currentUser
         ?
         <>

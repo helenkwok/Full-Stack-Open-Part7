@@ -1,4 +1,10 @@
 import useField from '../hooks/useField'
+import {
+  Box,
+  Button,
+  Typography,
+  TextField
+} from '@mui/material'
 
 const BlogForm = ({ createBlog }) => {
   const title = useField('text', 'title')
@@ -20,24 +26,33 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <div>
-      <h2>create new</h2>
+    <Box>
+      <Typography variant='h6'>create new</Typography>
       <form onSubmit={addBlog}>
         <div>
-          title:
-          <input {...title.input} />
+          <TextField
+            label='title'
+            variant='filled'
+            InputProps={{ ...title.input }}
+          />
         </div>
         <div>
-          author:
-          <input {...author.input} />
+          <TextField
+            label='author'
+            variant='filled'
+            InputProps={{ ...author.input }}
+          />
         </div>
         <div>
-          url:
-          <input {...url.input} />
+          <TextField
+            label='url'
+            variant='filled'
+            InputProps={{ ...url.input }}
+          />
         </div>
-        <button type="submit">create</button>
+        <Button type="submit" variant='contained'>create</Button>
       </form>
-    </div>
+    </Box>
   )
 }
 

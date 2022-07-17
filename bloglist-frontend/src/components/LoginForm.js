@@ -1,5 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import {
+  Container,
+  Typography,
+  TextField,
+  Button
+} from '@mui/material'
 import Notification from './Notification'
 import useField from '../hooks/useField'
 
@@ -22,23 +28,38 @@ const LoginForm = ({ handleLogin }) => {
   }
 
   return (
-    <div>
-      <h2>log in to application</h2>
+    <>
+      <Container>
+        <Typography variant='h5'>log in to application</Typography>
+      </Container>
 
       <Notification />
 
-      <form onSubmit={loginInput}>
-        <div>
-          username
-          <input {...username.input} />
-        </div>
-        <div>
-          password
-          <input {...password.input} />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
+      <Container>
+        <form onSubmit={loginInput}>
+          <div>
+            <TextField
+              label='username'
+              variant='filled'
+              InputProps={{ ...username.input }}
+            />
+          </div>
+          <div>
+            <TextField
+              label='password'
+              variant='filled'
+              InputProps={{ ...password.input }}
+            />
+          </div>
+          <div>
+            <Button
+              type="submit" variant="contained">
+                login
+            </Button>
+          </div>
+        </form>
+      </Container>
+    </>
   )
 }
 

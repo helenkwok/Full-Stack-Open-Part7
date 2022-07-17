@@ -1,3 +1,7 @@
+import {
+  Button,
+  TextField
+} from '@mui/material'
 import useField from '../hooks/useField'
 
 const CommentForm = ({ createComment }) => {
@@ -13,9 +17,13 @@ const CommentForm = ({ createComment }) => {
     <div>
       <form onSubmit={handleComment}>
         <div>
-          <input {...comment.input} />
+          <TextField
+            label='comment'
+            variant='filled'
+            InputProps={{ ...comment.input }}
+          />
         </div>
-        <button type="submit">add comment</button>
+        <Button variant='contained' type="submit">add comment</Button>
       </form>
     </div>
   )
