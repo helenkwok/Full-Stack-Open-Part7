@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useMatch } from 'react-router-dom'
 import { setNotification } from '../reducers/notificationReducer'
-import { addLike, removeBlog } from '../reducers/blogReducer'
-import Comments from './Comments'
+import { addLike, removeBlog, addComment } from '../reducers/blogReducer'
+import CommentForm from './CommentForm'
 
 
 const Blog = () => {
@@ -21,7 +21,7 @@ const Blog = () => {
 
   if (!blog) return null
 
-  const like = async (blog) => {
+  const like = async () => {
     dispatch(addLike(blog)).then(
       response => {
         if (response !== 'ok') {
@@ -33,7 +33,7 @@ const Blog = () => {
     })
   }
 
-  const remove = async (blog) => {
+  const remove = async () => {
     if (
       window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     ) {
@@ -49,6 +49,19 @@ const Blog = () => {
     }
   }
 
+  const createComment = async (comment) => {
+    dispatch(addComment(comment, blog)).then(
+      response => {
+        if (response !== 'ok') {
+          throw response
+        }
+      }
+    ).catch ((error) => {
+      console.log(error)
+      dispatch(setNotification('Failed to add comment', 'error', 5))
+    })
+  }
+
   return (
     <div>
       <h2>
@@ -61,7 +74,7 @@ const Blog = () => {
       </a>
       <div className="likes">
         <span>{blog.likes} likes</span>
-        <button className="likeButton" onClick={() => like(blog)}>
+        <button className="likeButton" onClick={() => like()}>
           like
         </button>
       </div>
@@ -70,11 +83,23 @@ const Blog = () => {
         style={{
           display: loggedUser.name === blog.user.name ? '' : 'none',
         }}
-        onClick={() => remove(blog)}
+        onClick={() => remove()}
       >
         remove
       </button>
-      <Comments comments={blog.comments} />
+      <div>
+        <h3>comments</h3>
+        <CommentForm createComment={createComment} />
+        <ul>
+          {blog.comments.length > 0?
+            blog.comments.map(comment =>
+              <li key={comment}>{comment}</li>
+            )
+            :
+            <div>no comment</div>
+          }
+        </ul>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const Comment = require('../models/comment')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 }).populate('comments', { comment: 1 })
@@ -30,7 +29,8 @@ blogsRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user._id,
+    comments: [],
+    user: user._id
   })
 
   const savedBlog = await blog.save()
@@ -39,27 +39,6 @@ blogsRouter.post('/', async (request, response) => {
   await savedBlog.populate('user', { username: 1, name: 1 })
 
   response.status(201).json(savedBlog)
-})
-
-blogsRouter.post('/:id/comments', async (request, response) => {
-  if (!request.user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  const blog = await Blog.findById(request.params.id)
-  const body = request.body
-
-  const comment = new Comment({
-    comment: body.comment,
-    blog: blog._id,
-  })
-
-  const savedComment = await comment.save()
-  blog.comments = blog.comments.concat(savedComment._id)
-  const savedBlog = await blog.save()
-  await savedBlog.populate('comments', { comment: 1 })
-
-  response.status(201).json(savedComment)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
@@ -98,6 +77,7 @@ blogsRouter.put('/:id', async (request, response) => {
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes,
+    comments: request.body.comments
   }
 
   const blogToUpdate = await Blog.findById(request.params.id)
@@ -112,6 +92,36 @@ blogsRouter.put('/:id', async (request, response) => {
     await updatedBlog.populate('user', { username: 1, name: 1 })
 
     response.json(updatedBlog)
+  } else {
+    response.status(404).end()
+  }
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  if (!request.user) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const blogToUpdate = await Blog.findById(request.params.id)
+
+  const blog = {
+    title: blogToUpdate.title,
+    author: blogToUpdate.author,
+    url: blogToUpdate.url,
+    likes: blogToUpdate.likes,
+    comments: blogToUpdate.comments.concat(request.body.comment)
+  }
+
+  if (blogToUpdate !== null) {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+      runValidators: true,
+      context: 'query',
+    })
+
+    await updatedBlog.populate('user', { username: 1, name: 1 })
+
+    response.status(201).json(updatedBlog)
   } else {
     response.status(404).end()
   }

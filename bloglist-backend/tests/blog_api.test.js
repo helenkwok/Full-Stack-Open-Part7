@@ -95,6 +95,7 @@ test('a new blog is successfully created', async () => {
     id: storedBlog.id,
     ...newBlog,
     user: storedBlog.user,
+    comments: []
   })
 })
 

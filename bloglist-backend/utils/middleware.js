@@ -4,10 +4,10 @@ const logger = require('./logger')
 const User = require('../models/user')
 
 morgan.token('body', (request) => {
-  if (process.env.NODE_ENV !== 'test') {
-    JSON.stringify(request.body)
+  if (process.env.NODE_ENV !== 'production') {
+    return JSON.stringify(request.body)
   }
-  JSON.stringify({})
+  return JSON.stringify({})
 })
 
 const requestLogger = morgan(
